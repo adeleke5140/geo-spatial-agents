@@ -1,6 +1,6 @@
 'use client';
 
-import { CirclePause, Mic } from 'lucide-react';
+import { AudioLines, CirclePause } from 'lucide-react';
 import { useRef, useState } from 'react';
 
 export default function VoiceInput({ onTranscriptionComplete }: { onTranscriptionComplete: (text: string) => void }) {
@@ -16,7 +16,7 @@ export default function VoiceInput({ onTranscriptionComplete }: { onTranscriptio
       mediaRecorderRef.current = mediaRecorder;
       chunksRef.current = [];
 
-      mediaRecorder.ondataavailable = (event) => {
+      mediaRecorder.ondataavailable = event => {
         if (event.data.size > 0) {
           chunksRef.current.push(event.data);
         }
@@ -55,7 +55,7 @@ export default function VoiceInput({ onTranscriptionComplete }: { onTranscriptio
       });
 
       const data = await response.json();
-      
+
       if (data.text) {
         onTranscriptionComplete(data.text);
       }
@@ -71,13 +71,17 @@ export default function VoiceInput({ onTranscriptionComplete }: { onTranscriptio
       <button
         onClick={isRecording ? stopRecording : startRecording}
         className={`px-6 py-2 rounded-full font-medium transition-colors ${
-          isRecording
-            ? 'bg-[#faf9f5] text-[hsl(0deg,16%,48%)]'
-            : 'bg-[#faf9f5] text-[hsl(0deg,16%,48%)]'
+          isRecording ? 'bg-[#faf9f5] text-[hsl(0deg,16%,48%)]' : 'bg-[#faf9f5] text-[hsl(0deg,16%,48%)]'
         }`}
         disabled={isProcessing}
       >
-        {isProcessing ? <span className="text-sm">Processing...</span> : isRecording ? <CirclePause className='size-5' /> : <Mic className='size-5' />}
+        {isProcessing ? (
+          <span className="text-sm">Processing...</span>
+        ) : isRecording ? (
+          <CirclePause className="size-5" />
+        ) : (
+          <AudioLines className="size-5" />
+        )}
       </button>
       {isRecording && (
         <div className="flex items-center gap-2">
@@ -87,4 +91,4 @@ export default function VoiceInput({ onTranscriptionComplete }: { onTranscriptio
       )}
     </div>
   );
-} 
+}
